@@ -1,0 +1,78 @@
+Plugin and maktaba installation.
+  :set nocompatible
+  :let g:plugindir = fnamemodify($VROOMFILE, ':p:h:h')
+  :let g:bootstrapfile = g:plugindir . '/bootstrap.vim'
+  :execute 'source' g:bootstrapfile
+  :call maktaba#LateLoad()
+
+Source the user config to map the backspace.
+  :execute 'source' .. g:plugindir .. '/vroom/config.vim'
+
+
+First make sure the correct indentation is being applied.
+Enter a small, unindented function
+  % void func()<cr>
+  % {<cr>
+  % if (true) {<cr>
+  % printf("hello\n!");<cr>
+  % }<cr>
+  % }<cr>
+Enable cindent and set tabstop and shiftwidth to 2
+  :set cin ts=2 sw=2 et
+  > gg=G
+Now function should have a 2-space indentation:
+  void func()
+  {
+    if (true) {
+      printf("hello\n!");
+    }
+  }
+  &
+  @end
+  @clear
+
+
+Pressing backspace puts printf line up.
+  > ivoid func(){<CR>if (true) {<CR><CR><CR>printf("hello\n!");<ESC>
+  void func(){
+    if (true) {
+  &
+  &
+      printf("hello\n!");
+
+  > I<BS><BS>
+  void func(){
+    if (true) {
+      printf("hello\n!");
+
+
+
+Even when the line is under indented.
+  > ivoid func(){<CR>if (true) {<CR><CR>printf("hello\n!");<ESC>I<C-H>
+  void func(){
+    if (true) {
+  &
+    printf("hello\n!");
+
+  > <BS>
+  void func(){
+    if (true) {
+      printf("hello\n!");
+
+
+
+Reindent the line with <C-F> if over indented.
+  > ivoid func(){<CR>if (true) {<CR><CR>printf("hello\n!");<ESC>I<Tab>
+  void func(){
+    if (true) {
+  &
+        printf("hello\n!");
+
+  > <BS>
+  void func(){
+    if (true) {
+  &
+      printf("hello\n!");
+
+
+
