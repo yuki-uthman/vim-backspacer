@@ -3,21 +3,39 @@ function! backspacer#hello() abort
   echom "Hello"
 endfunc
 
+function! s:only_whitespace_before_cursor() abort
+  let before_cursor = getline(".")[:col(".")-2]
+  let match_pos = match(before_cursor, '\S')
+
+  if match_pos >= 0
+    return v:false
+  else
+    return v:true
+  endif
+endfunc
+
+function! s:should_go_up() abort
+  let prev_col = getcurpos()[2]
+  exe "normal! a\<C-F>\<ESC>"
+  let new_col = getcurpos()[2]
+
+  if new_col >= prev_col
+    return v:true
+  else
+    return v:false
+  endif
+endfunc
+
+
 function! s:execute() abort
 
-  let before_cursor = getline(".")[:col(".")-2]
-  let got_non_whitespace = match(before_cursor, '\S')
-
-  if got_non_whitespace > 0
+  if s:only_whitespace_before_cursor()
+  else
     call feedkeys("\<BS>", "n")
     return
   endif
 
-  let prev_cur = getcurpos()
-  exe "normal! a\<C-F>\<ESC>"
-  let new_cur = getcurpos()
-
-  if new_cur[2] >= prev_cur[2]
+  if s:should_go_up()
     call feedkeys("0\<C-D>", "n")
     call feedkeys("\<BS>", "n")
     call feedkeys("\<C-F>", "n")
